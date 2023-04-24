@@ -1,0 +1,20 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  list-style: none;
+}
+
+:root {
+  font-family: "Josefin Sans", sans-serif;
+  font-size: 14px;
+  --color-black: 10, 10, 10;
+  --color-blue: 59, 76, 177;
+  --color-grey-dark: 160, 160, 160;
+  --color-grey: 239, 239, 239;
+  --color-white: 250, 250, 250;
+}
+
+button {
+  cursor: pointer;
+}
