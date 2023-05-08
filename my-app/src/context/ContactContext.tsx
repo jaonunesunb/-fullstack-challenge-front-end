@@ -1,97 +1,183 @@
-import { createContext, ReactNode, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { createContext, useContext, useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import {
+  IContact,
+  IContactRequest,
+  IContactDelete,
+  IContactUpdate,
+} from "../interfaces/contacts.interface";
 import api from "../services/api";
 
-interface IContact {
-  id?: number;
-  name?: string;
-  email?: string;
-  phone?: string;
-  clientId?: number;
+export const ContactContext = createContext<IContactContextExports>(
+  {} as IContactContextExports
+);
+
+interface IContactContextExports {
+  contacts: IContact[];
+  setContacts: React.Dispatch<React.SetStateAction<IContact[]>>;
+  editContact: (
+    data: IContactRequest,
+    contact: IContact
+  ) => void;
+  createContact: (data: IContactRequest) => void;
+  deleteContact: (data: IContactDelete) => void;
 }
 
-interface IContactContext {
-  contact: IContact | null;
-  getContact: (id: number) => Promise<IContact>;
-  allContacts: IContact[];
-  getAllContacts: () => Promise<IContact[]>;
-  registerContact: (contact: IContactRequest) => Promise<IContactRegisterResponse>;
-}
+function ContactProvider({ children }: any) {
+  const [contacts, setContacts] = useState<IContact[]>([] as IContact[]);
 
+  useEffect(() => {
+    loadContacts();
+  }, []);
 
-interface IContactRequest {
-  name?: string;
-  email?: string;
-  phone?: string;
-}
+  function loadContacts() {
+    api
+      .get<IContact[]>("/contacts")
+      .then(({ data }) => {
+        setContacts(data);
+      })
+      .catch((err) => {
+        toast.error(err.response.data.message, {
+          position: "top-right",
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      });
+  }
 
-interface IContactRegisterResponse {
-  id?: number;
-  name?: string;
-  email?: string;
-  phone?: string;
-  clientId?: number;
-  createdAt?: Date;
-  updatedAt?: Date;
-}
-
-export const ContactContext = createContext({} as any);
-
-interface IContextProps {
-  children: ReactNode;
-}
-
-const ContactContextProvider = ({ children }: any) => {
-  const [contact, setContact] = useState<IContact | null>(null);
-  const [allContacts, setAllContacts] = useState<IContact[]>([]);
-  const navigate = useNavigate();
-
-  const getAllContacts = async () => {
-    try {
-      const contacts = await api.get("/contacts");
-      setAllContacts(contacts.data);
-      return contacts.data;
-    } catch (err) {
-      console.log(err);
+  function createContact(data: IContactRequest) {
+    if (!data.name || !data.email || !data.phone) {
+      toast.error("Por favor, preencha todos os campos obrigatórios", {
+        position: "top-right",
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      return;
     }
-  };
 
-  const registerContact = async (contact: IContactRequest) => {
-    try {
-      const response = await api.post<IContactRegisterResponse>(
-        "/contacts",
-        contact
-      );
-      return response.data;
-    } catch (err) {
-      console.log(err);
+    api
+      .post<IContact>("/contacts", { ...data })
+      .then((response) => {
+        const newContact = response.data;
+        toast.success("Contato criado", {
+          position: "top-right",
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        setContacts([...contacts, newContact]);
+      })
+      .catch((err) => {
+        toast.error(err.response.data.message, {
+          position: "top-right",
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      });
+  }
+
+  function deleteContact(data: IContactDelete) {
+    api
+      .delete(`/contacts/${data.id}/`)
+      .then((response) => {
+        toast.success("Contato deletado", {
+          position: "top-right",
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        const updatedContacts = contacts.filter(
+          (contact) => contact.id !== data.id
+        );
+        setContacts(updatedContacts);
+      })
+      .catch((err) => {
+        toast.error(err.response.data.message, {
+          position: "top-right",
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      });
+  }
+
+  function editContact(
+    data: IContactUpdate,
+    contact: IContact
+  ) {
+    if (!data.name || !data.email || !data.phone) {
+      toast.error("Por favor, preencha todos os campos obrigatórios", {
+        position: "top-right",
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      return;
     }
-  };
 
-  const getContact = async (id: number) => {
-    try {
-      const response = await api.get<IContact>(`/contacts/${id}`);
-      return response.data;
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  
-
+    api
+      .patch(`/contacts/${contact.id}/`, data)
+      .then((response) => {
+        toast.success("Contato atualizado", {
+          position: "top-right",
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        const updatedContactIndex = contacts.indexOf(contact);
+        contacts.splice(updatedContactIndex, 1, {
+          ...contact,
+          ...data,
+        });
+        setContacts([...contacts]);
+      })
+      .catch((err) => {
+        toast.error(err.response.data.message, {
+          position: "top-right",
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      });
+  }
   return (
     <ContactContext.Provider
       value={{
-        contact,
-        getContact,
-        allContacts,
-        getAllContacts,
-        registerContact,
+        contacts,
+        setContacts,
+        createContact,
+        editContact,
+        deleteContact,
       }}
     >
       {children}
     </ContactContext.Provider>
   );
-};
+}
 
-export default ContactContextProvider;
+export function useContactContext() {
+  return useContext(ContactContext);
+}
+
+export default ContactProvider;

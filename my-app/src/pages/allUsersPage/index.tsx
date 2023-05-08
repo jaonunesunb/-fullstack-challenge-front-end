@@ -69,7 +69,6 @@ const ListUsers = () => {
         </tbody>
       </table>
 
-      <button>Cadastrar Cliente</button>
       <button>Cadastrar Contato</button>
     </>
   );

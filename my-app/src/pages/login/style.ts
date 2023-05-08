@@ -1,82 +1,60 @@
 import styled from "styled-components";
 
-export const LoginPage = styled.div`
+export const StyledLoginPage = styled.div`
+  background-color: #424242;
   width: 100%;
   min-height: 100vh;
-
   display: flex;
-  justify-content: center;
   align-items: center;
-
-  background-color: rgb(var(--color-blue), 1);
+  justify-content: center;
 
   .containerLogin {
-    width: 292px;
-    height: 488px;
-
-    background-color: rgb(var(--color-white), 1);
-    border-radius: 5px;
-
+    width: 90%;
+    max-width: 500px;
     display: flex;
     flex-direction: column;
-    padding-top: 11px;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: #bdbdbd;
+    border-radius: 5px;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.2);
+  }
 
-    .divLogo {
-      width: 100;
-
-      display: flex;
-      justify-content: center;
-
-      img {
-        width: 215.38px;
-        height: 93px;
-        margin-top: 15px;
-        margin-bottom: 50px;
-        transition: all 0.4s ease-in-out;
-      }
-
-      img:hover {
-        transform: scale(1.2, 1.2);
-      }
+  .divLogo {
+    margin-bottom: 20px;
+    img {
+      max-width: 200px;
+      height: auto;
     }
+  }
 
-    form {
-      display: flex;
-      flex-direction: column;
-
-      align-items: center;
-
-      label {
-        font-size: 16px;
-      }
-
-      Input {
-        margin-bottom: 20px;
-        width: 217px;
-      }
-
-      p {
-        margin-top: -14px;
-        margin-bottom: 10px;
-        font-size: 12px;
-        color: red;
-      }
-    }
-
+  .formLoginUser {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
     p {
-      width: 100%;
-      text-align: center;
-      margin: 10px 0px;
+      margin-bottom: 5px;
+      font-size: 0.8rem;
+      color: #757575;
     }
+  }
 
-    a {
-      text-align: center;
-    }
-
-    .buttonReplace {
-      background-color: transparent;
-      border: none;
-      color: rgb(var(--color-blue), 1);
+  .buttonReplace {
+    background-color: #2979ff;
+    color: #ffffff;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    &:hover {
+      background-color: #2962ff;
     }
   }
 `;

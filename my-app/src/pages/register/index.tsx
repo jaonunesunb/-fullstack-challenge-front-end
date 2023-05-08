@@ -69,13 +69,11 @@ const RegisterPage = () => {
       data.password,
       data.passwordConfirm
     );
-    console.log(responseData);
     if (!responseData) {
       toast.error("Houve um erro ao tentar criar a conta...");
     }
-    if (responseData && "accessToken" in responseData) {
-      toast.success("Conta criada!");
-      navigate("/home");
+    if (responseData) {
+      navigate("/");
     }
   };
   return (

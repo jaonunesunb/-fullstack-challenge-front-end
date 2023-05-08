@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { toast } from "react-toastify";
-import { LoginPage } from "./style";
+import { StyledLoginPage } from "./style";
 import Input from "../../components/input";
 import Button from "../../components/button";
 import { useContext } from "react";
@@ -15,7 +15,7 @@ interface ILoginData {
 }
 
 const Login = () => {
-  const { login } = useContext(UserContext);
+  const { userLogin } = useContext(UserContext);
 
   let navigate = useNavigate();
 
@@ -35,18 +35,7 @@ const Login = () => {
   } = useForm<ILoginData>({ resolver: yupResolver(formSchema) });
 
   const submitHandler = async (data: ILoginData) => {
-    console.log("Dados enviados:");
-    console.log(data);
-    const responseData = await login(data.email, data.password);
-    console.log("Dados recebidos:");
-    console.log(responseData);
-    if (!responseData) {
-      toast.error("Houve um erro...");
-      return;
-    }
-    if (responseData && "accessToken" in responseData) {
-      toast.success("Bem vindo!");
-    }
+    await userLogin(data);
   };
 
   const {
@@ -63,12 +52,12 @@ const Login = () => {
   } = register("password");
 
   return (
-    <LoginPage>
+    <StyledLoginPage>
       <div className="containerLogin">
         <div className="divLogo">
           <img src="" alt="Logo da plataforma" />
         </div>
-        <form onSubmit={handleSubmit(submitHandler)}>
+        <form className="formLoginUser" onSubmit={handleSubmit(submitHandler)}>
           <Input
             label="Email"
             type="text"
@@ -98,7 +87,7 @@ const Login = () => {
           Clique aqui
         </button>
       </div>
-    </LoginPage>
+    </StyledLoginPage>
   );
 };
 
